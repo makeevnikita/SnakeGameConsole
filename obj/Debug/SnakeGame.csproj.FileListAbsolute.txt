@@ -1,0 +1,6 @@
+C:\Users\а\source\repos\SnakeGame\bin\Debug\SnakeGame.exe.config
+C:\Users\а\source\repos\SnakeGame\bin\Debug\SnakeGame.exe
+C:\Users\а\source\repos\SnakeGame\bin\Debug\SnakeGame.pdb
+C:\Users\а\source\repos\SnakeGame\obj\Debug\SnakeGame.csprojAssemblyReference.cache
+C:\Users\а\source\repos\SnakeGame\obj\Debug\SnakeGame.exe
+C:\Users\а\source\repos\SnakeGame\obj\Debug\SnakeGame.pdb

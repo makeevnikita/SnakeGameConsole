@@ -4,129 +4,110 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnakeGame
+namespace Snake
 {
-    public class coord
-    {
-        public int X, Y;
-        public coord(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-
-
-
+    
     class Program
     {
-        public static Random rnd = new Random();
-        public static int W = 20, H = 20;
-        public static string[,] field = new string[W,H];
-        public static List<coord> snake = new List<coord>();
-        public static coord fruit;
-        public static int move = 10;
-
-        static void Control()
-        {
-            ConsoleKey key = Console.ReadKey(true).Key;
-            switch (key)
-            {
-                case ConsoleKey.A:
-                    if (move != 1)
-                        move = 0;
-                    break;
-                case ConsoleKey.D:
-                    if (move != 0)
-                        move = 1;
-                    break;
-                case ConsoleKey.W:
-                    if (move != 3)
-                        move = 2;
-                    break;
-                case ConsoleKey.S:
-                    if (move != 2)
-                        move = 3;
-                    break;
-            }
-            Console.Clear();
-            Logic();
-        }
-        static void Logic()
-        {
-            int x = snake[0].X, y = snake[0].Y;
-
-            switch (move)
-            {
-                case 0:
-                    --y;
-                    snake[snake.Count - 1].X = snake[snake.Count - 2].X;
-                    snake[snake.Count - 1].Y = snake[snake.Count - 2].Y;
-                    snake[0].Y -= 1;
-                    for(int i = 1; i < snake.Count - 1; ++i)
-                    {
-
-                    }
-                    break;
-                case 1:
-                    ++y;
-                    break;
-                case 2:
-                    --x;
-                    break;
-                case 3:
-                    ++x;
-                    break;
-
-            }
-
-            
-            coord newSegment = new coord(x, y);
-            if (snake[0].X == fruit.X && snake[0].Y == fruit.Y)
-            {
-                fruit.X = rnd.Next(0, W - 1);
-                fruit.Y = rnd.Next(0, H - 1);
-                
-                snake.Insert(0, newSegment);
-            }
-            Draw();
-        }
-        static void Draw()
-        {
-            for(int i = 0; i < W; ++i)
-            {
-                for(int j = 0; j < H; ++j)
-                {
-                    field[i, j] = "=";
-                }
-            }
-            for(int i = 0; i < snake.Count; ++i)
-            {
-                field[snake[i].X, snake[i].Y] = "#";
-            }
-            for(int i = 0; i < W; ++i)
-            {
-                for(int j = 0; j < H; ++j)
-                {
-                    Console.Write(field[i, j]);
-                }
-                Console.WriteLine();
-            }
-            for(int i = 0; i < snake.Count; ++i)
-            {
-                Console.WriteLine(snake[i].X + " " + snake[i].Y);
-            }
-            Console.WriteLine("move= " + move);
-            Console.WriteLine(snake.Count);
-            Control();
-        }
+        public static int width = 40, height = 50;
+        public static int headX, headY, fruitX, fruitY, size = 1;
+        public static ConsoleKeyInfo f;
+        public static string move = "";
+        bool eat = false;
+        public static string[,] map = new string[width, height];
+        public static int[] masX = new int[size];
+        public static int[] maxY = new int[size];
+        public static bool game = true;
+        
+        
         static void Main(string[] args)
         {
-            snake.Add(new coord(W / 2, (W/2) - 1));
-            snake.Add(new coord(W / 2, (W/2) - 2));
-            snake.Add(new coord(W / 2, (W/2) - 3));
-            fruit = new coord(rnd.Next(0, W - 1), rnd.Next(0, H - 1));
-            Draw();
+            Game.Move(width, height, ref headX, ref headY, move, ref map);
+        }
+        public static void Control()
+        {
+            while (game == true)
+            {
+                Console.WriteLine();
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        Console.Write(map[i, j]);
+                    }
+                    Console.WriteLine();
+                }
+
+                if (Console.KeyAvailable == true)
+                {
+                    f = Console.ReadKey();
+                    if (f.Key == ConsoleKey.UpArrow)
+                        if (move != "Down")
+                            move = "Up";
+                    if (f.Key == ConsoleKey.DownArrow)
+                        if (move != "Up")
+                            move = "Down";
+                    if (f.Key == ConsoleKey.RightArrow)
+                        if (move != "Left")
+                            move = "Right";
+                    if (f.Key == ConsoleKey.LeftArrow)
+                        if (move != "Right")
+                            move = "Left";
+                }
+            }
+        }
+        
+    }
+    class Game
+    {
+        public static void Move(int width, int height, ref int headX, ref int headY, string move, ref string[,] map)
+        {
+            {
+                map[headX, headY] = " ";
+                switch (move)
+                {
+                    case "Up":
+                        if (headY - 1 >= 0) headY -= 1;
+                        break;
+                    case "Down":
+                        if (headY + 1 < width) headY += 1;
+                        break;
+                    case "Left":
+                        if (headX - 1 >= 0) headX -= 1;
+                        break;
+                    case "Right":
+                        if (headX + 1 < height) headX += 1;
+                        break;
+                }
+                map[headX, headY] = "X";
+            }
+
+        }
+        public static void Draw(int width, int height, ref int headX, ref int headY, ref int fruitX, ref int fruitY, ref string[,] map)
+        {
+            Random rnd = new Random();
+            for (int i = 0; i < width; ++i)
+            {
+                for (int j = 0; i < height; ++j)
+                {
+                    if (i == 0 || j == 0 || i == width - 1 || j == height - 1)
+                    {
+                        map[i, j] = "=";
+                    }
+                }
+            }
+            headX = width - 2; headY = 1;
+            map[headX, headY] = "X";
+            while (true)
+            {
+                fruitX = rnd.Next(1, width - 2); fruitY = rnd.Next(1, height - 2);
+                if (fruitX == headX && fruitY == headY || fruitX != headX && fruitY == headY || fruitX != headX && fruitY != headY)
+                {
+                    break;
+                }
+            }
+            map[fruitX, fruitY] = "*";
         }
     }
+
 }

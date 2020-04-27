@@ -114,6 +114,8 @@ namespace Snake
                 Game.Move(width, height, ref headX, ref headY, move, ref map);
                 Game.EatGenerate(ref score, width, height, ref map, headX, headY, ref fruitX, ref fruitY, ref eat, masX, masY);
                 Game.Tail(ref masX, ref masY, ref map, ref eat, ref size, headX, headY);
+                Game.Lose(width, height, masX, masY, headX, headY, ref game, size);
+                Game.Win(width, height, map, ref game);
                 for (int i = 0; i < width; i++)
                 {
                     for (int j = 0; j < height; j++)
@@ -123,6 +125,8 @@ namespace Snake
                     }
                     Console.WriteLine();
                 }
+                Console.SetCursorPosition(0, height);
+                Console.WriteLine("Длина змейки: " + size);
 
                 if (Console.KeyAvailable == true)
                 {
@@ -165,6 +169,10 @@ namespace Snake
             masY[0] = headY;
             for(int i = 0; i < size; ++i)
             {
+                if(masX[i] == headX && masY[i] == headY)
+                {
+                    map[masX[i], masY[i]] = "X";
+                }
                 map[masX[i], masY[i]] = "X";
             }
             eat = false;
@@ -239,6 +247,49 @@ namespace Snake
                 }
             }
         }
+        public static void Lose(int width, int height, int[] masX, int[] masY, int headX, int headY, ref bool game, int size)
+        {
+            if (headX == 0 || headX == width - 1 || headY == 0 || headY == height - 1)
+            {
+                game = false;
+                Console.WriteLine("You LOSE!!!");
+                Console.ReadKey();
+            }
+            for (int i = 1; i < size; i++)
+            {
+
+                if (masX[i] == headX && masY[i] == headY)
+                {
+                    game = false;
+                    Console.WriteLine("You LOSE!!!");
+                    Console.ReadKey();
+                }
+            }
+        }
+        public static void Win(int width, int height, string[,] map, ref bool game)
+        {
+            int p = 0;
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    if (i != 0 || j != 0 || i != width - 1 || j != height - 1)
+                    {
+                        if (map[i, j] == "X")
+                        {
+                            p++;
+                        }
+                    }
+                }
+            }
+            if (p == map.Length - width * 2 - height * 2 + 4)
+            {
+                game = false;
+                Console.WriteLine("You WIN!!!");
+            }
+        }
+
+
     }
 
 }
